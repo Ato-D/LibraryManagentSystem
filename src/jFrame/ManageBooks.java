@@ -8,6 +8,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import java.awt.Color;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.ImageIcon;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
@@ -55,11 +56,15 @@ public class ManageBooks extends JFrame {
 	
 
 	private JPanel contentPane;
-	String book_name,author;
-	int book_id,quantity;
+	String bookName;
+	String author;
+	int bookId;
+	int quantity;
 	DefaultTableModel model;
-	private JTable table;
+	private JTable tbl_bookDetails;
 	private Object FONT;
+	//private JLabel txt_bookID;
+	private Frame frame;
 	
 
 	
@@ -187,6 +192,17 @@ public class ManageBooks extends JFrame {
 		panel.add(lblNewLabel_1_1_2_3);
 		
 		RSMaterialButtonCircle mtrlbtncrclAdd = new RSMaterialButtonCircle();
+		mtrlbtncrclAdd.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(addBook (txt_bookID, txt_bookName, txt_authorName, txt_quantity) == true) {
+					JOptionPane.showMessageDialog(frame, "Book Added Successfully");
+					clearTable();
+					setBookDetailsToTable();
+				}else {
+					JOptionPane.showMessageDialog(frame, "Book Addition Failed");
+				}
+			}
+		});
 		mtrlbtncrclAdd.setText("ADD");
 		mtrlbtncrclAdd.setFont(new Font("Dialog", Font.BOLD, 19));
 		mtrlbtncrclAdd.setBackground(new Color(255, 51, 51));
@@ -194,6 +210,18 @@ public class ManageBooks extends JFrame {
 		panel.add(mtrlbtncrclAdd);
 		
 		RSMaterialButtonCircle mtrlbtncrclUpdate = new RSMaterialButtonCircle();
+		mtrlbtncrclUpdate.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(updateBook (txt_bookID, txt_bookName, txt_authorName, txt_quantity) == true) {
+					JOptionPane.showMessageDialog(frame, "Book Updated Successfully");
+					clearTable();
+					setBookDetailsToTable();
+				}else {
+					JOptionPane.showMessageDialog(frame, "Book Updation Failed");
+				}
+			}
+			
+		});
 		mtrlbtncrclUpdate.setText("UPDATE");
 		mtrlbtncrclUpdate.setFont(new Font("Dialog", Font.BOLD, 19));
 		mtrlbtncrclUpdate.setBackground(new Color(255, 51, 51));
@@ -203,10 +231,18 @@ public class ManageBooks extends JFrame {
 		RSMaterialButtonCircle mtrlbtncrclDelete = new RSMaterialButtonCircle();
 		mtrlbtncrclDelete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				if(deleteBook (txt_bookID) == true) {
+					JOptionPane.showMessageDialog(frame, "Book Deleted Successfully");
+					clearTable();
+					setBookDetailsToTable();
+				}else {
+					JOptionPane.showMessageDialog(frame, "Book Deletion Failed");
+				}
+				
 			}
 		});
 		mtrlbtncrclDelete.setText("DELETE");
-		mtrlbtncrclDelete.setFont(new Font("Dialog", Font.BOLD, 19));
+		mtrlbtncrclDelete.setFont(new Font("Yu Gothic UI Semibold", Font.PLAIN, 19));
 		mtrlbtncrclDelete.setBackground(new Color(255, 51, 51));
 		mtrlbtncrclDelete.setBounds(364, 573, 147, 68);
 		panel.add(mtrlbtncrclDelete);
@@ -250,18 +286,18 @@ public class ManageBooks extends JFrame {
 		panel_3.setLayout(null);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(73, 204, 791, 250);
+		scrollPane.setBounds(73, 204, 791, 333);
 		panel_2.add(scrollPane);
 		scrollPane.setForeground(new Color(255,51,51));
 
 		
-		table = new JTable();
-		table.addMouseListener(new MouseAdapter() {
+		tbl_bookDetails = new JTable();
+		tbl_bookDetails.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				//display the selected row on the panel when the table or the selected row is clicked
-				int rowNo = table.getSelectedRow();
-				TableModel model = table.getModel();
+				int rowNo = tbl_bookDetails.getSelectedRow();
+				TableModel model = tbl_bookDetails.getModel();
 				
 				txt_bookID.setText(model.getValueAt(rowNo, 0).toString());
 				txt_bookName.setText(model.getValueAt(rowNo, 1).toString());
@@ -269,19 +305,19 @@ public class ManageBooks extends JFrame {
 				txt_quantity.setText(model.getValueAt(rowNo, 3).toString());
 			}
 		});
-		table.setRowHeight(40);
-		scrollPane.setViewportView(table);
-		JTableHeader Theader = table.getTableHeader();
+		tbl_bookDetails.setRowHeight(40);
+		scrollPane.setViewportView(tbl_bookDetails);
+		JTableHeader Theader = tbl_bookDetails.getTableHeader();
 		//JTableHeader Theader = new JTableHeader();
 		Theader.setBackground(new Color(255, 51, 51));
 		Theader.setForeground(new Color(255, 255, 255));
 	    Theader.setFont(new Font("Yu Gothic Semibold", Font.BOLD, 20));
 	    ((DefaultTableCellRenderer)Theader.getDefaultRenderer()).setHorizontalAlignment(JLabel.CENTER); //Center header Text
-	    table.setFont(new Font("Yu Gothic SemiLight", Font.PLAIN, 18));
-	    table.setSelectionBackground(new Color(255,51,51));
+	    tbl_bookDetails.setFont(new Font("Yu Gothic", Font.PLAIN, 20));
+	    tbl_bookDetails.setSelectionBackground(new Color(255,51,51));
 		
 		
-		table.setModel(new DefaultTableModel(
+		tbl_bookDetails.setModel(new DefaultTableModel(
 			new Object[][] {
 			},
 			new String[] {
@@ -291,7 +327,38 @@ public class ManageBooks extends JFrame {
 		setBookDetailsToTable();
 	}
 	
-	//to set the book details into the table
+	public boolean addBook(JCTextField txt_bookID, JCTextField txt_bookName, JCTextField txt_authorName,
+			JCTextField txt_quantity) {
+		boolean isAdded = false;
+		bookId = Integer.parseInt(txt_bookID.getText());
+		bookName = txt_bookName.getText();
+		author = txt_authorName.getText();
+		quantity = Integer.parseInt(txt_quantity.getText());
+		
+		try {
+			Connection con = DBConnection.getConnection();
+			String sql = "insert into book_details values(?,?,?,?)";
+			PreparedStatement pst = con.prepareStatement(sql);
+			pst.setInt(1, bookId);
+			pst.setString(2, bookName);
+			pst.setString(3, author);
+			pst.setInt(4, quantity);
+			
+			int rowCount = pst.executeUpdate();
+			if (rowCount > 0) {
+				isAdded = true;
+			}else {
+				isAdded = false;
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return isAdded;
+	}
+
+			//to set the book details into the table
 			public void setBookDetailsToTable() {
 				
 				try {
@@ -309,7 +376,7 @@ public class ManageBooks extends JFrame {
 						Object[] obj = {bookId,bookName,author,quantity};
 						
 						//Initializing the DefaultTableModel to add values in the database into the Jtable
-						model = (DefaultTableModel) table.getModel();
+						model = (DefaultTableModel) tbl_bookDetails.getModel();
 						model.addRow(obj);
 						
 					}
@@ -318,6 +385,73 @@ public class ManageBooks extends JFrame {
 					e.printStackTrace();
 				}
 			}
+			
+			//Method Clear table
+			
+			public void clearTable() {
+				DefaultTableModel model = (DefaultTableModel) tbl_bookDetails.getModel();
+				model.setRowCount(0);
+			}
+			
+			
+			//method to update book_details
+			public boolean updateBook(JCTextField txt_bookID, JCTextField txt_bookName, JCTextField txt_authorName,
+					JCTextField txt_quantity) {
+				boolean isAUpdated = false;
+				bookId = Integer.parseInt(txt_bookID.getText());
+				bookName = txt_bookName.getText();
+				author = txt_authorName.getText();
+				quantity = Integer.parseInt(txt_quantity.getText());
+				
+				try {
+					Connection con = DBConnection.getConnection();
+					String sql = "update book_details set book_name = ?, author = ?, quantity = ? where book_id = ?";
+					PreparedStatement pst = con.prepareStatement(sql);
+					pst.setString(1, bookName);
+					pst.setString(2, author);
+					pst.setInt(3, quantity);
+					pst.setInt(4, bookId);
+					
+					int rowCount = pst.executeUpdate();
+					if(rowCount > 0) {
+						isAUpdated = true;						
+					}else {
+						isAUpdated = false;
+					}					
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				return isAUpdated;
+				
+			}
+			
+			
+			//method to delete book_detail
+			public boolean deleteBook(JCTextField txt_bookID) {
+				boolean isDeleted = false; 
+				bookId = Integer.parseInt(txt_bookID.getText());
+				
+				try {
+					Connection con = DBConnection.getConnection();
+					String sql = "delete from book_details where book_id = ?";
+					PreparedStatement pst = con.prepareStatement(sql);
+					pst.setInt(1, bookId);
+					
+					int rowCount = pst.executeUpdate();
+					if (rowCount > 0) {
+						isDeleted = true;
+					}else {
+						isDeleted = false;
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				return isDeleted;
+				
+			}
+			
+
 }
 
 

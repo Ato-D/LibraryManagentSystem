@@ -6,6 +6,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import java.awt.Color;
+import java.awt.Container;
+
 import javax.swing.border.MatteBorder;
 import javax.swing.JLabel;
 import java.awt.Font;
@@ -27,10 +29,12 @@ import java.awt.Dimension;
 import javax.swing.ImageIcon;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Panel;
 
 public class HomePage extends JFrame {
 
 	private JPanel contentPane;
+	private Container panelPieChart;
 
 	/**
 	 * Launch the application.
@@ -145,45 +149,6 @@ public class HomePage extends JFrame {
 		lblNewLabel_3_1_3_1_4_1.setBounds(41, 475, 163, 27);
 		panel_4.add(lblNewLabel_3_1_3_1_4_1);
 		
-		JPanel panelPieChart = new JPanel();
-		panelPieChart.setBounds(680, 308, 457, 380);
-		panel_4.add(panelPieChart);
-		panelPieChart.setLayout(new BorderLayout(0, 0));
-		
-		JButton btnNewButton = new JButton("Display Pie Chart");
-		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			     //create dataset
-			      DefaultPieDataset barDataset = new DefaultPieDataset( );
-			      barDataset.setValue( "IPhone 5s" , new Double( 20 ) );  
-			      barDataset.setValue( "SamSung Grand" , new Double( 20 ) );   
-			      barDataset.setValue( "MotoG" , new Double( 40 ) );    
-			      barDataset.setValue( "Nokia Lumia" , new Double( 10 ) );  
-			      
-			      //create chart
-			       JFreeChart piechart = ChartFactory.createPieChart("mobile sales",barDataset, false,true,false);//explain
-			      
-			        PiePlot piePlot =(PiePlot) piechart.getPlot();
-			      //changing pie chart blocks colors
-			        piePlot.setSectionPaint("IPhone 5s", new Color(255,255,102));
-			        piePlot.setSectionPaint("SamSung Grand", new Color(102,255,102));
-			        piePlot.setSectionPaint("MotoG", new Color(255,102,153));
-			        piePlot.setSectionPaint("Nokia Lumia", new Color(0,204,204));
-			        
-			        piePlot.setBackgroundPaint(Color.white);
-			        
-			        //create chartPanel to display chart(graph)
-			        ChartPanel barChartPanel = new ChartPanel(piechart);
-			        panelPieChart.removeAll();
-			        panelPieChart.add(barChartPanel, BorderLayout.CENTER);
-			        panelPieChart.validate();
-			}
-		});
-		btnNewButton.setForeground(Color.BLACK);
-		btnNewButton.setFont(new Font("Yu Gothic UI Semibold", Font.BOLD, 20));
-		btnNewButton.setBounds(679, 240, 240, 35);
-		panel_4.add(btnNewButton);
-		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(32, 275, 597, 185);
 		panel_4.add(scrollPane);
@@ -244,6 +209,49 @@ public class HomePage extends JFrame {
 				"Book ID", "Name", "Author", "Quantity"
 			}
 		));
+		
+		Panel panelPieChart = new Panel();
+		panelPieChart.setBounds(671, 320, 463, 405);
+		panel_4.add(panelPieChart);
+		panelPieChart.setLayout(new BorderLayout(0, 0));
+		
+		JButton btnNewButton = new JButton("Display Pie Chart");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+		        //create dataset
+		      DefaultPieDataset barDataset = new DefaultPieDataset( );
+		      barDataset.setValue( "IPhone 5s" , new Double( 20 ) );  
+		      barDataset.setValue( "SamSung Grand" , new Double( 20 ) );   
+		      barDataset.setValue( "MotoG" , new Double( 40 ) );    
+		      barDataset.setValue( "Nokia Lumia" , new Double( 10 ) );  
+		      
+		      //create chart
+		       JFreeChart piechart = ChartFactory.createPieChart("mobile sales",barDataset, false,true,false);//explain
+		      
+		        PiePlot piePlot =(PiePlot) piechart.getPlot();
+		      
+		       //changing pie chart blocks colors
+		       piePlot.setSectionPaint("IPhone 5s", new Color(255,255,102));
+		        piePlot.setSectionPaint("SamSung Grand", new Color(102,255,102));
+		        piePlot.setSectionPaint("MotoG", new Color(255,102,153));
+		        piePlot.setSectionPaint("Nokia Lumia", new Color(0,204,204));
+		      
+		       
+		        piePlot.setBackgroundPaint(Color.white);
+		        
+		        //create chartPanel to display chart(graph)
+		        ChartPanel barChartPanel = new ChartPanel(piechart);
+		        panelPieChart.removeAll();
+		        panelPieChart.add(barChartPanel, BorderLayout.CENTER);
+		        panelPieChart.validate();
+				
+				
+			}
+		});
+		btnNewButton.setFont(new Font("Tahoma", Font.BOLD, 20));
+		btnNewButton.setBounds(671, 261, 211, 31);
+		panel_4.add(btnNewButton);
 		
 		JPanel panel = new JPanel();
 		panel.setLayout(null);
@@ -441,4 +449,6 @@ public class HomePage extends JFrame {
 		lblNewLabel_2_9.setBounds(49, 18, 156, 31);
 		panel_3_9.add(lblNewLabel_2_9);
 	}
+
+	
 }
