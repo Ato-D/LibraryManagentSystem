@@ -63,7 +63,6 @@ public class ManageBooks extends JFrame {
 	DefaultTableModel model;
 	private JTable tbl_bookDetails;
 	private Object FONT;
-	//private JLabel txt_bookID;
 	private Frame frame;
 	
 
@@ -206,7 +205,7 @@ public class ManageBooks extends JFrame {
 		mtrlbtncrclAdd.setText("ADD");
 		mtrlbtncrclAdd.setFont(new Font("Dialog", Font.BOLD, 19));
 		mtrlbtncrclAdd.setBackground(new Color(255, 51, 51));
-		mtrlbtncrclAdd.setBounds(41, 571, 158, 70);
+		mtrlbtncrclAdd.setBounds(41, 570, 158, 70);
 		panel.add(mtrlbtncrclAdd);
 		
 		RSMaterialButtonCircle mtrlbtncrclUpdate = new RSMaterialButtonCircle();
@@ -397,7 +396,7 @@ public class ManageBooks extends JFrame {
 			//method to update book_details
 			public boolean updateBook(JCTextField txt_bookID, JCTextField txt_bookName, JCTextField txt_authorName,
 					JCTextField txt_quantity) {
-				boolean isAUpdated = false;
+				boolean isUpdated = false;
 				bookId = Integer.parseInt(txt_bookID.getText());
 				bookName = txt_bookName.getText();
 				author = txt_authorName.getText();
@@ -414,15 +413,15 @@ public class ManageBooks extends JFrame {
 					
 					int rowCount = pst.executeUpdate();
 					if(rowCount > 0) {
-						isAUpdated = true;						
+						isUpdated = true;						
 					}else {
-						isAUpdated = false;
+						isUpdated = false;
 					}					
 
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				return isAUpdated;
+				return isUpdated;
 				
 			}
 			

@@ -35,6 +35,8 @@ public class HomePage extends JFrame {
 
 	private JPanel contentPane;
 	private Container panelPieChart;
+	Color mouseEnterColor = new Color(0,0,0);
+	Color mouseExitColor = new Color(51,51,51);
 
 	/**
 	 * Launch the application.
@@ -351,6 +353,14 @@ public class HomePage extends JFrame {
 				books.setVisible(true);
 				dispose();
 			}
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				panel_3_2.setBackground(mouseEnterColor);
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				panel_3_2.setBackground(mouseExitColor);  
+			}
 		});
 		lblNewLabel_2_2.setIcon(new ImageIcon(HomePage.class.getResource("/adminIcons/icons8_Book_26px.png")));
 		lblNewLabel_2_2.setForeground(new Color(151, 151, 151));
@@ -365,6 +375,16 @@ public class HomePage extends JFrame {
 		panel_2.add(panel_3_3);
 		
 		JLabel lblNewLabel_2_3 = new JLabel("   Manage Students");
+		lblNewLabel_2_3.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				panel_3_3.setBackground(mouseEnterColor);
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				panel_3_3.setBackground(mouseExitColor);
+			}
+		});
 		lblNewLabel_2_3.setIcon(new ImageIcon(HomePage.class.getResource("/adminIcons/icons8_Read_Online_26px.png")));
 		lblNewLabel_2_3.setForeground(new Color(151, 151, 151));
 		lblNewLabel_2_3.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 18));
